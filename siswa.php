@@ -18,11 +18,12 @@
             <td>JENIS KELAMIN</td>
             <td>ALAMAT</td>
             <td>NO HP</td>
+            <td>AKSI</td>
         </tr>
         <?php
         include "koneksi.php";
         if(isset($_GET['cari'])){
-            $cari = $_GET['cari'];
+            $cari = mysqli_real_escape_string($koneksi, $_GET['cari']);
             $sql = "SELECT*FROM siswa WHERE nisn='$cari' OR nama='$cari'";
 
         }else{
@@ -39,6 +40,14 @@
                 <td><?= $data['jk'] == 'P' ? 'Perempuan' : 'Laki-Laki' ?></td>
                 <td><?= $data['alamat'] ?></td>
                 <td><?= $data['nohp'] ?></td>
+                <td>
+                    <a href="delete-siswa.php?nisn=<?= $data['nisn'] ?>">
+                        <button>Hapus</button>
+                    </a>
+                    <a href="edit-siswa.php?nisn=<?= $data['nisn'] ?>">
+                        <button>Edit</button>
+                    </a>
+                </td>
             </tr>
             <?php
 
@@ -47,6 +56,6 @@
         ?>
     </table>
     <br>
-        <a href="add.php"><button>Tambah Siswa</button></a> 
+        <a href="add_siswa.php"><button>Tambah Siswa</button></a> 
 </body>
 </html>

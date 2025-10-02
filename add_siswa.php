@@ -42,11 +42,11 @@
     if(isset($_POST['submit'])){
         include "koneksi.php";
 
-        $nisn = $_POST['nisn'];
-        $nama = $_POST['nama'];
-        $jk = $_POST['jk'];
-        $alamat = $_POST['alamat'];
-        $nohp = $_POST['nohp'];
+        $nisn = mysqli_real_escape_string($koneksi, $_POST['nisn']);
+        $nama = mysqli_real_escape_string($koneksi, $_POST['nama']);
+        $jk = mysqli_real_escape_string($koneksi, $_POST['jk']);
+        $alamat = mysqli_real_escape_string($koneksi, $_POST['alamat']);
+        $nohp = mysqli_real_escape_string($koneksi, $_POST['nohp']);
 
         $sql = "INSERT INTO siswa VALUES ('$nisn', '$nama', '$jk', '$alamat', '$nohp')";
         $query = mysqli_query($koneksi, $sql);
