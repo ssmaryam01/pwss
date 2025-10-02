@@ -20,9 +20,27 @@
         $jk = mysqli_real_escape_string($koneksi, $_POST['jk']);
         $alamat = mysqli_real_escape_string($koneksi, $_POST['alamat']);
         $nohp = mysqli_real_escape_string($koneksi, $_POST['nohp']);
+        $old_foto_name = mysqli_real_escape_string($koneksi, $_POST['old_foto_name']);
 
-        $sql = "UPDATE siswa SET nama='$nama', jk='$jk', alamat='$alamat', nohp='$nohp' WHERE nisn = '$nisn'";
-        $query = mysqli_query($koneksi, $sql);
+        $foto = $_FILES['foto'];
+
+        if($foto['size'] < 3000000){
+            $file_name = basename($foto['name']);
+            $file_extension = pathinfo($file_name, PATHINFO_EXTENSION);
+            $new_file_name = uniqid()."_".time().".".$file_extension;
+            if(move_uploaded_file($foto['tmp_name'], 'foto/'.$new_file_name)){
+                if(file_exists('foto/'.$old_foto_name)){
+                    unlink('foto/'.$old_foto_name);
+                }
+                $sql = "UPDATE siswa SET nama='$nama', jk='$jk', alamat='$alamat', nohp='$nohp', foto='$new_file_name' WHERE nisn = '$nisn'";
+            }else{
+                $sql = "UPDATE siswa SET nama='$nama', jk='$jk', alamat='$alamat', nohp='$nohp' WHERE nisn = '$nisn'";
+            }
+            $query = mysqli_query($koneksi, $sql);
+        }else{
+            echo "ukuran foto terlalu besar";
+        }
+
 
     }
 
@@ -35,7 +53,7 @@
 
 
     <h1>Edit Data</h1>
-    <form action="" method="post">
+    <form action="" method="post" enctype="multipart/form-data">
         <table>
             <tr>
                 <td>NISN</td>
@@ -61,6 +79,24 @@
                 <td>NO HANDPHONE</td>
                 <td><input type="text" name="nohp" id="" value="<?= $data['nohp'] ?>"></td>
             </tr>
+            <tr>
+                <td>FOTO</td>
+                <td>
+                    <?php
+                    if(file_exists('foto/'.$data['foto'])){
+                        ?>
+                     <img src="<?= 'foto/'.$data['foto'] ?>" alt="" style="width: 50px; height: 50px">
+                     <?php
+                    }
+                    ?>
+                </td>
+                <tr>
+                    <td>EDIT FOTO</td>
+                    <td>
+                        <input type="file" name="foto" id="" accept="image/*">
+                        <input type="hidden" name="old_foto_name" value="<?= $data['foto'] ?>">
+                    </td>
+                </tr>
             <tr>
                 <td><input type="submit" value="Update" name="submit"></td>
             </tr>
